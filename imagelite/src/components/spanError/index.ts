@@ -1,0 +1,1 @@
+export { SpanError } from "./SpanError";
