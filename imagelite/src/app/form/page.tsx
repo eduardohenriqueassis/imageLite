@@ -1,7 +1,7 @@
 "use client";
 import { Button, InputText, Template, SpanError } from "@/components";
 import { useFormik } from "formik";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Utils } from "@/utils/utils";
 import { useImageService } from "@/resources/image/image.service";
 import { Tooltip } from "@nextui-org/tooltip";
@@ -13,32 +13,56 @@ import {
   formValidationSchema,
   errorMessages,
 } from "./formSchema";
+import { Console } from "console";
 
 export default function FormPage() {
   const notification = useNotification();
   const [imagePreview, setImagePreview] = useState<string>();
   const [alt, setAlt] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [enableImgErrorCheck, setEnableImgErrorCheck] =
+    useState<boolean>(false);
+  const [isImgError, setIsImgError] = useState<boolean>(true);
   const useSerice = useImageService();
+  // const [toggle, setToggle] = useState<boolean>(false);
   const [nameError, setNameError] = useState<boolean>(false);
   const [tagError, setTagError] = useState<boolean>(false);
-
+  const borderVariants: { [key: string]: string } = {
+    normal: "border-gray-900/25",
+    error: "border-red-600",
+  };
+  const divRef = useRef(null);
   const formik = useFormik<FormProps>({
     initialValues: formsScheme,
-    onSubmit: handleSubmit,
     validationSchema: formValidationSchema,
+    onSubmit: handleSubmit,
   });
   useEffect(() => {
     setNameError(false);
     setTagError(false);
+    setEnableImgErrorCheck(false);
   }, []);
 
+  useEffect(() => {
+    console.log(isImgError);
+  }, [isImgError]);
   function validateInputData(e: React.ChangeEvent<HTMLInputElement>) {
     const inputId = e.target.id;
     if (e.target.value === "") {
       inputId === "name" ? setNameError(true) : setTagError(true);
     } else {
       inputId === "name" ? setNameError(false) : setTagError(false);
+    }
+    getImgInfo();
+    isImgError ? setEnableImgErrorCheck(true) : setEnableImgErrorCheck(false);
+  }
+
+  function getImgInfo() {
+    const divElement = document.getElementById("divWrapper");
+    if (divElement?.className.includes("red")) {
+      setIsImgError(true);
+    } else {
+      setIsImgError(false);
     }
   }
 
@@ -55,6 +79,8 @@ export default function FormPage() {
     formData.append("file", data.file);
     formData.append("name", data.name);
     formData.append("tags", data.tags);
+    setEnableImgErrorCheck(true);
+    // setToggle((prev) => !prev);
     await useSerice.postImage(formData);
 
     formik.resetForm();
@@ -70,14 +96,21 @@ export default function FormPage() {
       formik.setFieldValue("file", file);
       const imageURL = URL.createObjectURL(file);
       setAlt(event.target.files[0].name);
+      setEnableImgErrorCheck(true);
+      // setToggle((prev) => !prev);
       setImagePreview(imageURL);
     }
+  }
+
+  function handleButtonClick() {
+    setEnableImgErrorCheck(true);
+    formik.handleSubmit();
   }
 
   return (
     <Template loading={loading}>
       <section className="flex flex-col items-center justify-center my-5">
-        <h5 className="mt-3 mb-10 text-3xl font-extrabold tracking-tight text-gray-900">
+        <h5 className="mt-3 mb-10 text-2xl font-extrabold tracking-tight text-gray-600">
           New Image
         </h5>
         <form onSubmit={formik.handleSubmit}>
@@ -91,7 +124,7 @@ export default function FormPage() {
               value={formik.values.name}
               onChange={handleOnChange}
               onBlur={handleOnBlur}
-              error={nameError}
+              error={nameError || formik.errors.name}
             />
           </div>
           <div className="mt-5 grid grid-cols-1">
@@ -104,7 +137,7 @@ export default function FormPage() {
               value={formik.values.tags}
               onChange={handleOnChange}
               onBlur={handleOnBlur}
-              error={tagError}
+              error={tagError || formik.errors.tags}
             />
             <div className="mt-5 grid grid-cols-1">
               <label
@@ -113,8 +146,16 @@ export default function FormPage() {
               >
                 Image: *
               </label>
-              {formik.errors.file && <SpanError message={errorMessages.file} />}
-              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+
+              {/* {enableImgErrorCheck && toggle ? "" : ""} */}
+              <div
+                id="divWrapper"
+                className={` mt-2 flex justify-center rounded-lg border border-dashed px-6 py-10 ${
+                  formik.errors.file && enableImgErrorCheck && isImgError
+                    ? borderVariants.error
+                    : borderVariants.normal
+                }`}
+              >
                 <div className="text-center">
                   <Utils.renderIf condition={!imagePreview}>
                     <svg
@@ -161,9 +202,17 @@ export default function FormPage() {
                 </div>
               </div>
             </div>
+            {enableImgErrorCheck && formik.errors.file && isImgError && (
+              <SpanError message={errorMessages.file} />
+            )}
           </div>
           <div className="mt-6 flex items-center justify-end gap-x-6">
-            <Button color="blue" text="Save" type="submit" />
+            <Button
+              color="blue"
+              text="Save"
+              type="submit"
+              onClick={handleButtonClick}
+            />
             <Link href="/galery">
               <Button color="cancel" text="Galery" />
             </Link>
