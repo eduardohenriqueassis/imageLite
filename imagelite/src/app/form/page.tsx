@@ -18,20 +18,18 @@ import { Console } from "console";
 export default function FormPage() {
   const notification = useNotification();
   const [imagePreview, setImagePreview] = useState<string>();
+  const [isImgError, setIsImgError] = useState<boolean>(true);
   const [alt, setAlt] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
   const [enableImgErrorCheck, setEnableImgErrorCheck] =
     useState<boolean>(false);
-  const [isImgError, setIsImgError] = useState<boolean>(true);
   const useSerice = useImageService();
-  // const [toggle, setToggle] = useState<boolean>(false);
   const [nameError, setNameError] = useState<boolean>(false);
   const [tagError, setTagError] = useState<boolean>(false);
   const borderVariants: { [key: string]: string } = {
     normal: "border-gray-900/25",
     error: "border-red-600",
   };
-  const divRef = useRef(null);
   const formik = useFormik<FormProps>({
     initialValues: formsScheme,
     validationSchema: formValidationSchema,
@@ -48,10 +46,12 @@ export default function FormPage() {
   }, [isImgError]);
   function validateInputData(e: React.ChangeEvent<HTMLInputElement>) {
     const inputId = e.target.id;
+    const isName = inputId === "name";
+
     if (e.target.value === "") {
-      inputId === "name" ? setNameError(true) : setTagError(true);
+      isName ? setNameError(true) : setTagError(true);
     } else {
-      inputId === "name" ? setNameError(false) : setTagError(false);
+      isName ? setNameError(false) : setTagError(false);
     }
     getImgInfo();
     isImgError ? setEnableImgErrorCheck(true) : setEnableImgErrorCheck(false);
@@ -68,6 +68,7 @@ export default function FormPage() {
 
   function handleOnBlur(e: React.ChangeEvent<HTMLInputElement>) {
     validateInputData(e);
+    formik.handleChange(e);
   }
   function handleOnChange(e: React.ChangeEvent<HTMLInputElement>) {
     validateInputData(e);
@@ -104,6 +105,9 @@ export default function FormPage() {
 
   function handleButtonClick() {
     setEnableImgErrorCheck(true);
+    setIsImgError(true);
+    setNameError(true);
+    setTagError(true);
     formik.handleSubmit();
   }
 
@@ -124,7 +128,7 @@ export default function FormPage() {
               value={formik.values.name}
               onChange={handleOnChange}
               onBlur={handleOnBlur}
-              error={nameError || formik.errors.name}
+              error={nameError && formik.errors.name}
             />
           </div>
           <div className="mt-5 grid grid-cols-1">
@@ -137,7 +141,7 @@ export default function FormPage() {
               value={formik.values.tags}
               onChange={handleOnChange}
               onBlur={handleOnBlur}
-              error={tagError || formik.errors.tags}
+              error={tagError && formik.errors.tags}
             />
             <div className="mt-5 grid grid-cols-1">
               <label
