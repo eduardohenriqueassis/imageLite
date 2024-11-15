@@ -8,7 +8,7 @@ interface InputTextProps {
   id: string;
   label?: string;
   value?: string;
-  error?: boolean;
+  error?: boolean | string;
   name?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void | undefined;
   onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
