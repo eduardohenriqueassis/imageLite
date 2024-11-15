@@ -13,6 +13,7 @@ import {
   formValidationSchema,
   errorMessages,
 } from "./formSchema";
+import { Console } from "console";
 
 export default function FormPage() {
   const [imagePreview, setImagePreview] = useState<string>();
@@ -42,6 +43,9 @@ export default function FormPage() {
     setEnableImgErrorCheck(false);
   }, []);
 
+  useEffect(() => {
+    console.log(isImgError);
+  }, [isImgError]);
   function validateInputData(e: React.ChangeEvent<HTMLInputElement>) {
     const inputId = e.target.id;
     const isName = inputId === "name";
@@ -95,6 +99,7 @@ export default function FormPage() {
       const imageURL = URL.createObjectURL(file);
       setAlt(event.target.files[0].name);
       setEnableImgErrorCheck(true);
+      // setToggle((prev) => !prev);
       setImagePreview(imageURL);
     }
   }
@@ -147,6 +152,7 @@ export default function FormPage() {
                 Image: *
               </label>
 
+            
               <div
                 id="divWrapper"
                 className={` mt-2 flex justify-center rounded-lg border border-dashed px-6 py-10 ${
