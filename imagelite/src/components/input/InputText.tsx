@@ -1,10 +1,11 @@
 import { errorMessages } from "@/app/form/formSchema";
-import React from "react";
+import React, { useState } from "react";
 import { SpanError } from "../spanError";
 
 interface InputTextProps {
+  style?: string;
   placeholder?: string;
-  type: string;
+  type?: string;
   id: string;
   label?: string;
   value?: string;
@@ -15,8 +16,9 @@ interface InputTextProps {
 }
 
 export const InputText: React.FC<InputTextProps> = ({
+  style,
   placeholder,
-  type,
+  type = "text",
   id,
   label,
   value,
@@ -40,7 +42,7 @@ export const InputText: React.FC<InputTextProps> = ({
         {label}
       </label>
       <input
-        className={`${
+        className={`${style} ${
           error ? colorVariants.error : colorVariants.normal
         } px-3 py-2 rounded-lg text-gray-900`}
         id={id}

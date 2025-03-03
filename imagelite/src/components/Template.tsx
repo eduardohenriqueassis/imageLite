@@ -12,15 +12,15 @@ export const Template: React.FC<TemplateProps> = ({
   loading = false,
 }: TemplateProps) => {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Header />
-      <div
+      <main
         className={`${
           loading ? "animate-pulse" : ""
-        } container mx-auto mt-8 px-4`}
+        } container mx-auto mt-8 px-4 flex-grow`}
       >
         {children}
-      </div>
+      </main>
       <Footer />
       <ToastContainer
         position="top-right"
@@ -35,7 +35,7 @@ export const Template: React.FC<TemplateProps> = ({
           <Loading />
         </div>
       )}
-    </>
+    </div>
   );
 };
 
