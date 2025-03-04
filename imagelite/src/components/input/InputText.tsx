@@ -11,6 +11,7 @@ interface InputTextProps {
   value?: string;
   error?: boolean | string;
   name?: string;
+  errMessage: string | undefined;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void | undefined;
   onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -26,6 +27,7 @@ export const InputText: React.FC<InputTextProps> = ({
   name,
   onChange,
   onBlur,
+  errMessage,
 }: InputTextProps) => {
   const colorVariants: { [key: string]: string } = {
     normal: "border border-gray-600 placeholder-gray-600",
@@ -53,11 +55,7 @@ export const InputText: React.FC<InputTextProps> = ({
         onChange={onChange}
         onBlur={onBlur}
       />
-      {error && (
-        <SpanError
-          message={id === "name" ? errorMessages.name : errorMessages.tags}
-        />
-      )}
+      {error && <SpanError message={errMessage} />}
     </>
   );
 };

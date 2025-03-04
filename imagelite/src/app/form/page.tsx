@@ -129,7 +129,8 @@ export default function FormPage() {
               value={formik.values.name}
               onChange={handleOnChange}
               onBlur={handleOnBlur}
-              error={nameError && formik.errors.name}
+              error={nameError}
+              errMessage={formik.errors.name}
             />
           </div>
           <div className="mt-5 grid grid-cols-1">
@@ -142,7 +143,8 @@ export default function FormPage() {
               value={formik.values.tags}
               onChange={handleOnChange}
               onBlur={handleOnBlur}
-              error={tagError && formik.errors.tags}
+              error={tagError}
+              errMessage={formik.errors.tags}
             />
             <div className="mt-5 grid grid-cols-1">
               <label
@@ -152,7 +154,6 @@ export default function FormPage() {
                 Image: *
               </label>
 
-            
               <div
                 id="divWrapper"
                 className={` mt-2 flex justify-center rounded-lg border border-dashed px-6 py-10 ${
