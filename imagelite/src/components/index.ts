@@ -4,3 +4,4 @@ export { Button } from "./button";
 export { InputText } from "./input";
 export { useNotification } from "./notification";
 export { SpanError } from "./spanError";
+export {AuthenticatedPage} from "./AuthenticatedPage";

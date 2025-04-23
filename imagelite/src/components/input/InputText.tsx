@@ -1,4 +1,3 @@
-import { errorMessages } from "@/app/form/formSchema";
 import React, { useState } from "react";
 import { SpanError } from "../spanError";
 
@@ -11,7 +10,7 @@ interface InputTextProps {
   value?: string;
   error?: boolean | string;
   name?: string;
-  errMessage: string | undefined;
+  errMessage?: string | undefined;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void | undefined;
   onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }

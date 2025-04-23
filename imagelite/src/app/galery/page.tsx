@@ -1,11 +1,18 @@
 "use client";
 
-import { Template, ImageCard, Button, InputText } from "@/components";
-import { useImageService } from "@/resources/image/image.service";
+import {
+  Template,
+  ImageCard,
+  Button,
+  InputText,
+  AuthenticatedPage,
+} from "@/components";
+import { useAuth, useImageService } from "@/resources";
 import { Image } from "@/resources/image/image.resource";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useNotification } from "@/components/notification";
+import { useRouter } from "next/navigation";
 
 export default function GaleryPage() {
   const notification = useNotification();
@@ -14,10 +21,26 @@ export default function GaleryPage() {
   const [query, setQuery] = useState<string>("");
   const [extension, setExtension] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
+  const auth = useAuth();
 
   async function searchImages() {
     setLoading(true);
+    if (!auth.isSessionValid()){
+      router.push("/login");
+      return;
+    }
     const result = await useService.getImages(query, extension);
+    if (
+      typeof result === "string" &&
+      result === "Something wrong, please login again"
+    ) {
+      notification.notify("Something wrong, please login again", "warning");
+      localStorage.removeItem("token");
+      setLoading(false);
+      router.push("/login");
+      return;
+    }
     setImages(result);
     setLoading(false);
     if (result.length === 0) {
@@ -41,7 +64,7 @@ export default function GaleryPage() {
   }
 
   return (
-    <>
+    <AuthenticatedPage>
       <Template loading={loading}>
         <section className="flex flex-col items-center justify-center my-5">
           <div className="flex space-x-4">
@@ -71,6 +94,6 @@ export default function GaleryPage() {
           {renderImageCards()}
         </section>
       </Template>
-    </>
+    </AuthenticatedPage>
   );
 }
