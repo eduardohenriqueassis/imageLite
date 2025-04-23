@@ -11,6 +11,7 @@ public class ImageDTO {
     private String id;
     private String url;
     private String name;
+    private String userEmail;
     private String extension;
     private Long size;
     @JsonFormat(pattern = "dd/MM/yyyy")

@@ -29,10 +29,11 @@ public class ImagesController {
     public ResponseEntity save(
             @RequestParam("file") MultipartFile file,
             @RequestParam("name") String name,
-            @RequestParam("tags") List<String> tags
+            @RequestParam("tags") List<String> tags,
+            @RequestParam("userEmail") String user
     ) throws IOException {
         log.info("Imagem recebida: name: {}, size: {}", file.getOriginalFilename(), file.getSize());
-        Image image = mapper.mapToImage(file, name, tags);
+        Image image = mapper.mapToImage(file, name, tags, user);
         Image savedImage = service.save(image);
         URI imageURI = buildImageURL(savedImage);
         return ResponseEntity.created(imageURI).build();

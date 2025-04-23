@@ -24,6 +24,8 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    @Column(name = "user_email")
+    private String userEmail;
     @Column
     private String name;
     @Column
