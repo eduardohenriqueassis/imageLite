@@ -1,3 +1,4 @@
+"use client";
 import { Image } from "./image.resource";
 import { useAuth } from "@/resources";
 
@@ -32,6 +33,18 @@ class ImageService {
       body: data,
     });
     return response.headers.get("location") ?? "";
+  }
+
+  async deleteImages(id: string): Promise<string> {
+    const userSession = this.auth.getUserSession();
+    const response = await fetch(`${this.baseURL}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${userSession?.accessToken}`,
+      },
+    });
+    const success = await response.text();
+    return success;
   }
 }
 

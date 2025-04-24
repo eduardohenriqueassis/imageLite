@@ -23,6 +23,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    public Image deleteImage(String id) {
+        Image image = repository.findById(id).orElseThrow();
+        repository.delete(image);
+        return image;
+    }
+
+    @Override
     public Optional<Image> getById(String id) {
         return repository.findById(id);
     }

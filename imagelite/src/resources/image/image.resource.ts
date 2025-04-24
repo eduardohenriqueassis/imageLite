@@ -5,4 +5,5 @@ export class Image {
   size?: number;
   uploadDate?: string;
   id?: string;
+  userEmail?: string;
 }

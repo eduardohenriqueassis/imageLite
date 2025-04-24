@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface ImageService {
     Image save(Image image);
 
+    Image deleteImage(String id);
+
     Optional <Image> getById(String id);
 
     List<Image> search(ImageExtension extension, String query);

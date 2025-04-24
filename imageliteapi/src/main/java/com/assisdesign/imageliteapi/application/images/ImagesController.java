@@ -68,6 +68,12 @@ public class ImagesController {
      return ResponseEntity.ok(images);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteImage(@PathVariable String id){
+        Image deletedImage = service.deleteImage(id);
+        return ResponseEntity.ok(deletedImage.getName());
+    }
+
     private URI buildImageURL(Image image){
         String imagePath = "/" + image.getId();
         return ServletUriComponentsBuilder

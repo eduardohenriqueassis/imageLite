@@ -15,6 +15,11 @@ export const Template: React.FC<TemplateProps> = ({
   children,
   loading = false,
 }: TemplateProps) => {
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -26,14 +31,16 @@ export const Template: React.FC<TemplateProps> = ({
         {children}
       </main>
       <Footer />
-      <ToastContainer
-        position="top-right"
-        autoClose={8000}
-        hideProgressBar={false}
-        draggable={false}
-        closeOnClick={true}
-        pauseOnHover={true}
-      />
+      {isClient && (
+        <ToastContainer
+          position="top-right"
+          autoClose={8000}
+          hideProgressBar={false}
+          draggable={false}
+          closeOnClick={true}
+          pauseOnHover={true}
+        />
+      )}
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <Loading />
@@ -46,6 +53,11 @@ export const Template: React.FC<TemplateProps> = ({
 const Header: React.FC = () => {
   const auth = useAuth();
   const router = useRouter();
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
   function logout() {
     auth.clearUserSession();
     router.push("/login");
@@ -56,7 +68,7 @@ const Header: React.FC = () => {
         <Link href={"/galery"}>
           <h1 className="text-3xl font-bold">ImageLite</h1>
         </Link>
-        {auth.isSessionValid() && (
+        {isClient && auth.isSessionValid() && (
           <div className="flex items-center">
             <div className="relative">
               <span className="w-64 py-3 px-6 text-md">

@@ -19,7 +19,7 @@ import {
   formValidationSchema,
   errorMessages,
 } from "./formSchema";
-import { Console } from "console";
+import { useAuth } from "@/resources";
 
 export default function FormPage() {
   const [imagePreview, setImagePreview] = useState<string>();
@@ -35,7 +35,8 @@ export default function FormPage() {
     error: "border-red-600",
   };
   const notification = useNotification();
-  const useSerice = useImageService();
+  const useService = useImageService();
+  const user = useAuth();
 
   const formik = useFormik<FormProps>({
     initialValues: formsScheme,
@@ -85,7 +86,8 @@ export default function FormPage() {
     formData.append("file", data.file);
     formData.append("name", data.name);
     formData.append("tags", data.tags);
-    await useSerice.postImage(formData);
+    formData.append("userEmail", user.getUserSession()?.email || "");
+    await useService.postImage(formData);
     notification.notify("Image successfuly uploaded", "success");
     setTimeout(() => {
       setEnableImgErrorCheck(false);
@@ -94,7 +96,8 @@ export default function FormPage() {
       formik.resetForm();
       setImagePreview("");
       setAlt("");
-      setLoading(false);}, 5000);
+      setLoading(false);
+    }, 1000);
   }
 
   function onFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
